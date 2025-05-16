@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CnpjData } from '@/types/CnpjTypes';
+import { CnpjData } from '../types/CnpjTypes';
 import axios from 'axios';
 import './CnpjSearch.css';
 
