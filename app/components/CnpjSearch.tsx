@@ -119,39 +119,39 @@ const CnpjSearch = () => {
             <div className="info-grid">
               <div className="info-item">
                 <label>Nome Fantasia:</label>
-                <span>{data.estabelecimento.nome_fantasia || 'Não informado'}</span>
+                <span>{data.estabelecimento?.nome_fantasia || 'Não informado'}</span>
               </div>
               <div className="info-item">
                 <label>Situação:</label>
-                <span className={`status ${data.estabelecimento.situacao_cadastral.toLowerCase()}`}>
-                  {data.estabelecimento.situacao_cadastral}
+                <span className={`status ${data.estabelecimento?.situacao_cadastral?.toLowerCase() || ''}`}>
+                  {data.estabelecimento?.situacao_cadastral || 'Não informado'}
                 </span>
               </div>
               <div className="info-item">
                 <label>Data de Abertura:</label>
-                <span>{formatDate(data.estabelecimento.data_inicio_atividade)}</span>
+                <span>{formatDate(data.estabelecimento?.data_inicio_atividade)}</span>
               </div>
               <div className="info-item">
                 <label>Última Atualização:</label>
-                <span>{formatDate(data.estabelecimento.atualizado_em)}</span>
+                <span>{formatDate(data.estabelecimento?.atualizado_em)}</span>
               </div>
               <div className="info-item">
                 <label>Porte:</label>
-                <span>{data.porte.descricao}</span>
+                <span>{data.porte?.descricao || 'Não informado'}</span>
               </div>
               <div className="info-item">
                 <label>Natureza Jurídica:</label>
-                <span>{data.natureza_juridica.descricao}</span>
+                <span>{data.natureza_juridica?.descricao || 'Não informado'}</span>
               </div>
               <div className="info-item">
                 <label>Capital Social:</label>
-                <span>R$ {parseFloat(data.capital_social).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                <span>R$ {data.capital_social ? parseFloat(data.capital_social).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}</span>
               </div>
               <div className="info-item">
                 <label>Regime Tributário:</label>
                 <span>
-                  {data.simples.simples === 'Sim' ? 'Simples Nacional' : 'Não Optante pelo Simples'}
-                  {data.simples.mei === 'Sim' ? ' - MEI' : ''}
+                  {data.simples?.simples === 'Sim' ? 'Simples Nacional' : 'Não Optante pelo Simples'}
+                  {data.simples?.mei === 'Sim' ? ' - MEI' : ''}
                 </span>
               </div>
             </div>
@@ -163,21 +163,21 @@ const CnpjSearch = () => {
               <div className="info-item">
                 <label>Logradouro:</label>
                 <span>
-                  {data.estabelecimento.tipo_logradouro} {data.estabelecimento.logradouro}, {data.estabelecimento.numero}
-                  {data.estabelecimento.complemento ? ` - ${data.estabelecimento.complemento}` : ''}
+                  {data.estabelecimento?.tipo_logradouro} {data.estabelecimento?.logradouro}, {data.estabelecimento?.numero}
+                  {data.estabelecimento?.complemento ? ` - ${data.estabelecimento.complemento}` : ''}
                 </span>
               </div>
               <div className="info-item">
                 <label>Bairro:</label>
-                <span>{data.estabelecimento.bairro}</span>
+                <span>{data.estabelecimento?.bairro || 'Não informado'}</span>
               </div>
               <div className="info-item">
                 <label>CEP:</label>
-                <span>{data.estabelecimento.cep.replace(/^(\d{5})(\d{3})$/, '$1-$2')}</span>
+                <span>{data.estabelecimento?.cep ? data.estabelecimento.cep.replace(/^(\d{5})(\d{3})$/, '$1-$2') : 'Não informado'}</span>
               </div>
               <div className="info-item">
                 <label>Cidade/UF:</label>
-                <span>{data.estabelecimento.cidade.nome}/{data.estabelecimento.estado.sigla}</span>
+                <span>{data.estabelecimento?.cidade?.nome}/{data.estabelecimento?.estado?.sigla}</span>
               </div>
             </div>
           </div>
@@ -188,10 +188,10 @@ const CnpjSearch = () => {
               <div className="info-item">
                 <label>Telefone Principal:</label>
                 <span>
-                  {formatPhone(data.estabelecimento.ddd1, data.estabelecimento.telefone1)}
+                  {formatPhone(data.estabelecimento?.ddd1 || '', data.estabelecimento?.telefone1 || '')}
                 </span>
               </div>
-              {data.estabelecimento.ddd2 && data.estabelecimento.telefone2 && (
+              {data.estabelecimento?.ddd2 && data.estabelecimento?.telefone2 && (
                 <div className="info-item">
                   <label>Telefone Secundário:</label>
                   <span>
@@ -201,7 +201,7 @@ const CnpjSearch = () => {
               )}
               <div className="info-item">
                 <label>Email:</label>
-                <span>{data.estabelecimento.email || 'Não informado'}</span>
+                <span>{data.estabelecimento?.email || 'Não informado'}</span>
               </div>
             </div>
           </div>
@@ -211,16 +211,16 @@ const CnpjSearch = () => {
             <div className="activity-description">
               <div className="info-item">
                 <label>CNAE:</label>
-                <span>{data.estabelecimento.atividade_principal.id}</span>
+                <span>{data.estabelecimento?.atividade_principal?.id || 'Não informado'}</span>
               </div>
               <div className="info-item">
                 <label>Descrição:</label>
-                <span>{data.estabelecimento.atividade_principal.descricao}</span>
+                <span>{data.estabelecimento?.atividade_principal?.descricao || 'Não informado'}</span>
               </div>
             </div>
           </div>
 
-          {data.estabelecimento.atividades_secundarias.length > 0 && (
+          {data.estabelecimento?.atividades_secundarias?.length > 0 && (
             <div className="info-section">
               <h3>Atividades Secundárias</h3>
               <ul className="activities-list">
@@ -233,28 +233,30 @@ const CnpjSearch = () => {
             </div>
           )}
 
-          <div className="info-section">
-            <h3>Sócios</h3>
-            <div className="partners-list">
-              {data.socios.map((socio, index) => (
-                <div key={index} className="partner-item">
-                  <h4>{socio.nome}</h4>
-                  <p>Qualificação: {socio.qualificacao_socio.descricao}</p>
-                  <p>Data de Entrada: {formatDate(socio.data_entrada)}</p>
-                  <p>Faixa Etária: {socio.faixa_etaria}</p>
-                  <p>País de Origem: {socio.pais.nome}</p>
-                </div>
-              ))}
+          {data.socios?.length > 0 && (
+            <div className="info-section">
+              <h3>Sócios</h3>
+              <div className="partners-list">
+                {data.socios.map((socio, index) => (
+                  <div key={index} className="partner-item">
+                    <h4>{socio.nome}</h4>
+                    <p>Qualificação: {socio.qualificacao_socio?.descricao || 'Não informado'}</p>
+                    <p>Data de Entrada: {formatDate(socio.data_entrada)}</p>
+                    <p>Faixa Etária: {socio.faixa_etaria || 'Não informado'}</p>
+                    <p>País de Origem: {socio.pais?.nome || 'Não informado'}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {data.estabelecimento.inscricoes_estaduais.length > 0 && (
+          {data.estabelecimento?.inscricoes_estaduais?.length > 0 && (
             <div className="info-section">
               <h3>Inscrições Estaduais</h3>
               <div className="info-grid">
                 {data.estabelecimento.inscricoes_estaduais.map((inscricao, index) => (
                   <div key={index} className="info-item">
-                    <label>IE - {inscricao.estado.sigla}:</label>
+                    <label>IE - {inscricao.estado?.sigla}:</label>
                     <span>
                       {inscricao.inscricao_estadual} 
                       <span className={`status ${inscricao.ativo ? 'ativa' : 'inativa'}`}>
