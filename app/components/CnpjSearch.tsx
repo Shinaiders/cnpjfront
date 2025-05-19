@@ -45,10 +45,41 @@ const CnpjSearch = () => {
 
     try {
       const cleanCnpj = cnpj.replace(/\D/g, '');
-      const response = await axios.get(`https://publica.cnpj.ws/cnpj/${cleanCnpj}`);
-      setData(response.data);
-    } catch (err) {
-      setError('Erro ao buscar dados do CNPJ. Verifique se o CNPJ é válido.');
+      
+      if (cleanCnpj.length !== 14) {
+        throw new Error('CNPJ inválido. O CNPJ deve conter 14 dígitos.');
+      }
+
+      const response = await axios.get(`https://publica.cnpj.ws/cnpj/${cleanCnpj}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000 // 10 segundos de timeout
+      });
+
+      if (response.data) {
+        setData(response.data);
+      } else {
+        throw new Error('Nenhum dado encontrado para este CNPJ.');
+      }
+    } catch (err: any) {
+      if (err.response) {
+        // Erro da API
+        if (err.response.status === 404) {
+          setError('CNPJ não encontrado.');
+        } else if (err.response.status === 429) {
+          setError('Limite de requisições excedido. Por favor, tente novamente mais tarde.');
+        } else {
+          setError(`Erro ao buscar dados do CNPJ: ${err.response.status}`);
+        }
+      } else if (err.request) {
+        // Erro de rede
+        setError('Erro de conexão. Verifique sua internet e tente novamente.');
+      } else {
+        // Outros erros
+        setError(err.message || 'Erro ao buscar dados do CNPJ.');
+      }
     } finally {
       setLoading(false);
     }
